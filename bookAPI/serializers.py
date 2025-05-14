@@ -27,7 +27,7 @@ class BookSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'total_pages', 'pdf_file', 'pdf_url',
             'rating', 'published_date', 'author_name',
             'categories', 'category_ids', 'is_recommended',
-            'created_at', 'updated_at', 'review_count', 'avg_rating'
+            'created_at', 'updated_at', 'review_count', 'avg_rating','summary'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'pdf_url']
         extra_kwargs = {

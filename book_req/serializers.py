@@ -4,18 +4,20 @@ from .models import BookRequest
 class BookRequestSerializer(serializers.ModelSerializer):
     book_title = serializers.CharField(source='book.title', read_only=True)
     user_email = serializers.CharField(source='user.email', read_only=True)
+    processed_by_email = serializers.CharField(source='processed_by.email', read_only=True)
     can_approve = serializers.SerializerMethodField()
 
     class Meta:
         model = BookRequest
         fields = [
             'id', 'book', 'book_title', 'user', 'user_email', 
-            'status', 'request_date', 'processed_by', 'processed_date',
-            'can_approve'
+            'status', 'request_date', 'processed_by', 'processed_by_email',
+            'processed_date', 'can_approve'
         ]
         read_only_fields = [
             'user', 'status', 'request_date', 
-            'processed_by', 'processed_date'
+            'processed_by', 'processed_date', 'processed_by_email',
+            'book_title', 'user_email', 'can_approve'
         ]
 
     def get_can_approve(self, obj):
@@ -24,8 +26,11 @@ class BookRequestSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user = self.context['request'].user
-        book = data['book']
+        book = data.get('book')
         
+        if not book:
+            return data
+            
         # Prevent duplicate pending requests
         if BookRequest.objects.filter(
             user=user, 

@@ -8,6 +8,7 @@ class Review(models.Model):
     text = models.TextField()
     rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])  # 1-5 stars
     created_at = models.DateTimeField(auto_now_add=True)
+    is_visible = models.BooleanField(default=True)  # Add this field for moderation
 
     class Meta:
         unique_together = ('book', 'user')  # Prevent duplicate reviews

@@ -1,9 +1,10 @@
 from rest_framework import viewsets, status
+from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import BookRequest
 from .serializers import BookRequestSerializer
-from rest_framework import viewsets, permissions,status
+from rest_framework import viewsets, permissions,status,response
 from django.utils import timezone
 
 class BookRequestViewSet(viewsets.ModelViewSet):
@@ -35,3 +36,10 @@ class BookRequestViewSet(viewsets.ModelViewSet):
         book_request.processed_date = timezone.now()
         book_request.save()
         return Response({'status': 'rejected'}, status=status.HTTP_200_OK)
+    
+class AdminBookRequestCountView(viewsets.ViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    
+    def list(self, request):
+        total_requests = BookRequest.objects.count()
+        return response.Response({'total_book_requests': total_requests})

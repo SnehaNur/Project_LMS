@@ -10,7 +10,7 @@ from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
-from django.db.models import Count, F
+from django.db.models import Count, F, Max
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -33,7 +33,8 @@ class BookViewSet(viewsets.ModelViewSet):
         'rating', 
         'created_at',
         'popular',
-        'new_release'
+        'new_release',
+        'recent_read'
     ]
 
     def get_queryset(self):
@@ -45,6 +46,10 @@ class BookViewSet(viewsets.ModelViewSet):
             queryset = queryset.annotate(popular=Count('recentread'))
         if 'new_release' in ordering:
             queryset = queryset.annotate(new_release=F('published_date'))
+            
+        if 'recent_read' in ordering:
+            queryset = queryset.annotate(recent_read=Max('recentread__last_read'))
+
 
         # Filter by recent reads (authenticated or anonymous)
         recent_reads = self.request.GET.get('recent_reads', '').lower()

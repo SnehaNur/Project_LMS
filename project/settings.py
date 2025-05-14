@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'book_info',
     'book_view',
     'book_download',
+    'borrow_req',
+    'user_details',
 ]
 
 MIDDLEWARE = [
