@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from .serializers import UserDetailSerializer,UserInfoSerializer
 from bookAPI.models import Book
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from .serializers import UserdetailsSerializer
 
 
 User = get_user_model()
@@ -50,3 +53,17 @@ class UserInfoView(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         # Permanent deletion
         instance.delete()
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserdetailsSerializer(request.user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        serializer = UserdetailsSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)

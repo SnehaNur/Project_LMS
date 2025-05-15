@@ -23,6 +23,11 @@ class Book(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     pdf_file = models.FileField(upload_to='books/pdfs/', blank=True, null=True)
+    cover_image = models.ImageField(
+    upload_to='books/covers/',  # Different directory than PDFs
+    blank=True,
+    null=True
+    )
     summary = models.TextField(blank=True)
 
     def __str__(self):

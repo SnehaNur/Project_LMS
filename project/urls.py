@@ -29,4 +29,5 @@ urlpatterns = [
     path('user/', include('book_view.urls')),
     path('api/downloads/', include('book_download.urls')),
     path('api/user-details/', include('user_details.urls')),
+    path('api/admin/', include('most_read.urls')),
 ]

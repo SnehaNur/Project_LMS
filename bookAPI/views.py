@@ -29,6 +29,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
     ordering_fields = [
         'title', 
+        'categories',
         'published_date', 
         'rating', 
         'created_at',
@@ -120,12 +121,12 @@ class BookSearchView(generics.ListAPIView):
         published_year = self.request.query_params.get('published_year')
         rating = self.request.query_params.get('rating')
 
+        if category:
+            queryset = queryset.filter(categories__name__icontains=category)
         if title:
             queryset = queryset.filter(title__icontains=title)
         if author:
             queryset = queryset.filter(author_name__icontains=author)
-        if category:
-            queryset = queryset.filter(categories__name__icontains=category)
         if published_year:
             queryset = queryset.filter(published_date__year=published_year)
         if rating:

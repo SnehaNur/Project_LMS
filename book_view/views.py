@@ -1,10 +1,10 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from bookAPI.models import RecentRead
 from .serializers import RecentReadSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status, permissions,generics
 from .models import FavouriteBook
 from bookAPI.models import Book
 from rest_framework.generics import ListAPIView
@@ -16,7 +16,27 @@ class UserRecentReadBooksView(generics.ListAPIView):
 
     def get_queryset(self):
         return RecentRead.objects.filter(user=self.request.user).order_by('-last_read')
+    
 
+class AdminRecentReadBooksList(generics.ListAPIView):
+    serializer_class = RecentReadSerializer
+    permission_classes = [permissions.IsAdminUser]
+    queryset = RecentRead.objects.all().order_by('-last_read')
+
+class AdminRecentReadBooksDetail(generics.RetrieveDestroyAPIView):
+    serializer_class = RecentReadSerializer
+    permission_classes = [permissions.IsAdminUser]
+    queryset = RecentRead.objects.all()
+    lookup_field = 'pk'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(
+            {"detail": "Recent read entry deleted successfully."},
+            status=status.HTTP_200_OK
+        )
+    
 class ToggleFavouriteBookView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

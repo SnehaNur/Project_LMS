@@ -11,6 +11,7 @@ djangorestframework-simplejwt = "*"
 django-ratelimit = "*"
 django-filter = "*"
 drf-yasg = "*"
+pillow = "*"
 
 [dev-packages]
 
