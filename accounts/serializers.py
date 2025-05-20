@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
         }
+        ref_name = 'Accounts_User'
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email=value).exists():

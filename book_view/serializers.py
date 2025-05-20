@@ -5,6 +5,7 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'title', 'author_name', 'published_date', 'rating']
+        ref_name = 'BookView_Book'
 
 class RecentReadSerializer(serializers.ModelSerializer):
     book = BookSerializer()

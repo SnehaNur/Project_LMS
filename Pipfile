@@ -12,6 +12,7 @@ django-ratelimit = "*"
 django-filter = "*"
 drf-yasg = "*"
 pillow = "*"
+cryptography = "*"
 
 [dev-packages]
 

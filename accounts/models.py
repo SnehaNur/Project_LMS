@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
     
     contact_number = models.CharField(
         validators=[phone_regex],
-        max_length=17,
+        max_length=15,
         unique=True
     )
     email = models.EmailField(unique=True)
