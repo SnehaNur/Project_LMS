@@ -6,13 +6,13 @@ name = "pypi"
 [packages]
 pymysql = "*"
 django = "*"
-djangorestframework = "*"
-djangorestframework-simplejwt = "*"
 django-ratelimit = "*"
 django-filter = "*"
-drf-yasg = "*"
 pillow = "*"
 cryptography = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
