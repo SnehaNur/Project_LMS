@@ -11,7 +11,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
 from django.db.models import Count, F, Max
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework import generics, permissions, filters as drf_filters
+from django_filters import rest_framework as django_filters
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -23,9 +26,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = BookFilter
-    search_fields = ['title', 'description', 'author_name', 'categories__name']
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    #filterset_class = BookFilter
 
     ordering_fields = [
         'title', 
@@ -109,30 +111,23 @@ class BookViewSet(viewsets.ModelViewSet):
         return Response({'status': 'book marked as read'})
 
 class BookSearchView(generics.ListAPIView):
+    queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
-    def get_queryset(self):
-        queryset = Book.objects.all()
+    filter_backends = [django_filters.DjangoFilterBackend, drf_filters.SearchFilter]
+    filterset_class = BookFilter
+    search_fields = ['title', 'author_name']
 
-        title = self.request.query_params.get('title')
-        author = self.request.query_params.get('author')
-        category = self.request.query_params.get('category')
-        published_year = self.request.query_params.get('published_year')
-        rating = self.request.query_params.get('rating')
-
-        if category:
-            queryset = queryset.filter(categories__name__icontains=category)
-        if title:
-            queryset = queryset.filter(title__icontains=title)
-        if author:
-            queryset = queryset.filter(author_name__icontains=author)
-        if published_year:
-            queryset = queryset.filter(published_date__year=published_year)
-        if rating:
-            queryset = queryset.filter(rating__gte=rating)
-
-        return queryset.distinct()
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('category', openapi.IN_QUERY, description="Category name", type=openapi.TYPE_STRING),
+        openapi.Parameter('author_name', openapi.IN_QUERY, description="Exact author name", type=openapi.TYPE_STRING),
+        openapi.Parameter('published_year', openapi.IN_QUERY, description="Published year", type=openapi.TYPE_INTEGER),
+        openapi.Parameter('rating', openapi.IN_QUERY, description="Minimum rating", type=openapi.TYPE_NUMBER, format='float'),
+        openapi.Parameter('is_recommended', openapi.IN_QUERY, description="Is recommended book", type=openapi.TYPE_BOOLEAN),
+        openapi.Parameter('search', openapi.IN_QUERY, description="Search by title or author", type=openapi.TYPE_STRING),
+    ])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class ReadBooksView(generics.ListAPIView):

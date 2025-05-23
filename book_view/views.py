@@ -22,6 +22,7 @@ class AdminRecentReadBooksList(generics.ListAPIView):
     serializer_class = RecentReadSerializer
     permission_classes = [permissions.IsAdminUser]
     queryset = RecentRead.objects.all().order_by('-last_read')
+    filter_backends = [] 
 
 class AdminRecentReadBooksDetail(generics.RetrieveDestroyAPIView):
     serializer_class = RecentReadSerializer

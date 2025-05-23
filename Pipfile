@@ -8,11 +8,11 @@ pymysql = "*"
 django = "*"
 django-ratelimit = "*"
 django-filter = "*"
-pillow = "*"
 cryptography = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 drf-yasg = "*"
+pillow = "*"
 
 [dev-packages]
 
