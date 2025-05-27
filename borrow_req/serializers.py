@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BorrowRequest
+from .models import BorrowRequest,BookAvailability
 from django.utils import timezone
 from datetime import timedelta
 
@@ -27,15 +27,23 @@ class BorrowRequestSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = self.context['request'].user
         book = data['book']
-        
-        # Check if user already has a pending request for this book
-        if BorrowRequest.objects.filter(
-            user=user, 
-            book=book, 
-            status__in=[BorrowRequest.PENDING, BorrowRequest.APPROVED]
-        ).exists():
-            raise serializers.ValidationError(
-                "You already have an active or pending request for this book."
-            )
-            
+
+        # Check if user already has a pending or approved request for this book
+        if BorrowRequest.objects.filter(user=user, book=book, status__in=[BorrowRequest.PENDING, BorrowRequest.APPROVED]).exists():
+         raise serializers.ValidationError("You already have an active or pending request for this book.")
+
+        # Check if the book has available copies
+        availability = BookAvailability.objects.get(book=book)
+        if availability.available_copies <= 0:
+         raise serializers.ValidationError("This book is currently unavailable.")
+
         return data
+
+    
+class BookAvailabilitySerializer(serializers.ModelSerializer):
+    book_title = serializers.CharField(source='book.title', read_only=True)
+
+    class Meta:
+        model = BookAvailability
+        fields = ['id', 'book', 'book_title', 'total_copies', 'available_copies']
+        read_only_fields = ['available_copies']

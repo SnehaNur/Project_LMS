@@ -37,3 +37,11 @@ class BorrowRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.book.title} ({self.status})"
+
+class BookAvailability(models.Model):
+    book = models.OneToOneField(Book, on_delete=models.CASCADE, related_name='availability')
+    total_copies = models.PositiveIntegerField(default=0)
+    available_copies = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.book.title} - {self.available_copies}/{self.total_copies} available"
