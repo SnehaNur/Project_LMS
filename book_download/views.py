@@ -51,7 +51,7 @@ class UserDownloadsView(generics.ListAPIView):
         return DownloadedBook.objects.filter(user=self.request.user).select_related('book')
 
 class UpdateBookPDFView(APIView):
-   # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     parser_classes = [MultiPartParser, FormParser]  # 📌 Allow file uploads
 
     def put(self, request, book_id):

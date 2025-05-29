@@ -35,15 +35,15 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('accounts.urls')),
-    path('api/', include('bookAPI.urls')),
+    path('auth/', include('accounts.urls')),
+    path('', include('bookAPI.urls')),
     path('user/', include('book_req.urls')),
-    path('user/', include('borrow_req.urls')),
-    path('user/book-info/', include('book_info.urls')),
+    path('', include('borrow_req.urls')),
+    path('', include('book_info.urls')),
     path('user/', include('book_view.urls')),
-    path('api/downloads/', include('book_download.urls')),
-    path('api/user-details/', include('user_details.urls')),
-    path('api/admin/', include('most_read.urls')),
+    path('', include('book_download.urls')),
+    path('user-details/', include('user_details.urls')),
+    path('admin/', include('most_read.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
